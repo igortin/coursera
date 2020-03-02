@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -58,18 +57,18 @@ func TestCartCheckout(t *testing.T) {
 		c := &Cart{
 			PaymentApiURL: ts.URL,
 		}
-		// request to ts server
 
+		// request to ts server
 		result, err := c.Checkout(item.ID)
 
 		// fmt.Println(result, item.IsError, err)
+		// Check variable "err" - not nil, if it is not nil raise error
 
-		// Check variable "err" that is not nil, if it is not nil raise error test
 		// due to expected "err" is nill, because item.IsError set false
 		if err != nil && !item.IsError {
 			t.Errorf("[%d] unexpected error: %#v", caseNum, err)
 		}
-		// Check variable "err" that is nil, if it is nil raise error test
+		// Check variable "err" - nil, if it is nil raise error test
 		// due to expected "err" is not nill, because item.IsError
 		if err == nil && item.IsError {
 			t.Errorf("[%d] expected error, got nil", caseNum)

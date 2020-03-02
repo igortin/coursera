@@ -99,7 +99,6 @@ func (srv *SearchClient) FindUsers(req SearchRequest) (*SearchResponse, error) {
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-
 	switch resp.StatusCode {
 	case http.StatusUnauthorized:
 		return nil, fmt.Errorf("Bad AccessToken")
@@ -117,19 +116,20 @@ func (srv *SearchClient) FindUsers(req SearchRequest) (*SearchResponse, error) {
 		return nil, fmt.Errorf("unknown bad request error: %s", errResp.Error)
 	}
 
-	data := []User{}
+	data := &SearchResponse{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		return nil, fmt.Errorf("cant unpack result json: %s", err)
 	}
 
 	result := SearchResponse{}
-	if len(data) == req.Limit {
+	if len(data.Users) == req.Limit {
 		result.NextPage = true
-		result.Users = data[0 : len(data)-1]
+		result.Users = data.Users[0 : len(data.Users)-1]
 	} else {
-		result.Users = data[0:len(data)]
+		result.Users = data.Users[0:len(data.Users)]
 	}
-
+	// fmt.Println(data)
+	// fmt.Println("-----------------------------------------")
 	return &result, err
 }
